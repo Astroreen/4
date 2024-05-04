@@ -1,0 +1,55 @@
+{
+    "dictionary": {
+        "labels": {
+            "createLabel": "Create",
+            "statsLabel": "Stats",
+            "separator": "-"
+        },
+        "buttons":{
+            "create": "Create",
+            "deny": "Deny"
+        }
+    },
+    "storage": "minecraft:chest_4",
+    "mechanisms": [
+        {
+            "name": "presser",
+            "recipes": [
+                {
+                    "name": "create:iron_sheet",
+                    "amount": 1,
+                    "materials": [
+                        {
+                            "material": "minecraft:iron_ingot",
+                            "amount": 1,
+                            "block": "create:depot_1"
+                        }
+                    ]
+                },
+                {
+                    "name": "create:golden_sheet",
+                    "amount": 1,
+                    "materials": [
+                        {
+                            "material": "minecraft:gold_ingot",
+                            "amount": 1,
+                            "block": "create:depot_1"
+                        }
+                    ]
+                },
+                {
+                    "name": "create:brass_sheet",
+                    "amount": 1,
+                    "materials": [
+                        {
+                            "material": "create:brass_ingot",
+                            "amount": 1,
+                            "block": "create:depot_1"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+

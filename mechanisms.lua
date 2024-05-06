@@ -12,6 +12,11 @@ function getMechanismName(index)
     return config.mechanisms[tonumber(index)].name
 end
 
+--gets block name by mechanism's index
+function getMechanismOutputBlock(mechanism)
+    return tostring(config.mechanisms[tonumber(mechanism)].block)
+end
+
 --gets all names of mechanisms
 function getAllMechanismNames()
     local size = getMechanismSize() --size of mechanisms array
@@ -83,6 +88,20 @@ function getMaterial(mechanism, recipe, material)
     return {name = item.material, amount = item.amount, block = item.block}
 end
 
+--gets material's info from name
+function getMaterialInfoByName(name)
+
+    for j = 1, getMechanismSize() do
+        local recipes = getRecipes(j)
+        for k = 1, #recipes do
+            if recipes[k].name == name then
+                return {found = true, mechanism = j, recipe = k}
+            end
+        end
+    end
+    return {found = false, mechanism = nil, recipe = nil}
+end
+
 --get array of all needed materials in certain recipe e.g. list[1].name, list[1].amount
 function getMaterials(mechanism, recipe)
     local arr = {}
@@ -132,7 +151,7 @@ function haveEnoughResources(mechanism, recipe, multiplier)
         local item = getItem(materials[i].name)
 
         if item ~= nil then
-            --difining total amount of item in the storage
+            --difining total amount of item in the storage 
             local totalAmount = 0
             for j = 1, #item.amount do
                 totalAmount = totalAmount + item.amount[j]
@@ -141,12 +160,22 @@ function haveEnoughResources(mechanism, recipe, multiplier)
             if totalAmount < materials[i].amount*multiplier then
                 table.insert(needed, {name = materials[i].name, amount = materials[i].amount*multiplier - totalAmount})
             end
-        else
-            table.insert(needed, {name = materials[i].name, amount = materials[i].amount*multiplier})
+        else --check if the needed material have a recipe
+            local item_info = getMaterialInfoByName(materials[i].name)
+            if item_info.found then --only work if item can be crafted
+                local multiplier_x = materials[i].amount*multiplier / recipes[i].amount --how much we need of that item
+                local recursive = haveEnoughResources(j, k, multiplier_x)
+
+                if recursive.enough == false then
+                    table.insert(needed, recursive.need)
+                end
+            else --we don't have enough items, fill up needed array
+                table.insert(needed, {name = materials[i].name, amount = materials[i].amount*multiplier})
+            end
         end
     end
 
-    if #needed ~= 0 then return {enough = false, needed} end
+    if #needed ~= 0 then return {enough = false, need = needed} end
 
     return {enough = true, nil}
 end
@@ -157,43 +186,57 @@ function createItem(mechanism, recipe, multiplier)
     local materials = getMaterials(mechanism, recipe)
 
     for index, material in pairs(materials) do
-        local item = getItem(material.name)
+        local item = getItem(material.name) --gets item from storage
 
-        if item == nil then
-            print("There was not enough resources!")
-            print("Needed %d x %s"):format(material.amount*multiplier, material.name)
-            error()
-        else
+        if item == nil then --item was not found in storage, will try to craft it if possible
+            local material_info = getMaterialInfoByName(material.name)
+            if material_info.found == false then
+                print("There was not enough resources!")
+                print("Needed %d x %s"):format(material.amount*multiplier, material.name)
+                error()
+                return
+            end
 
-            --constantly create item, but in cost of preventing main thread from execution until job is done
-            local block = peripheral.wrap(material.block)
+            local material_recipe = getRecipe(material_info.mechanism, material_info.recipe) --recipe of the material that we can craft
+            local multiplier_material = material.amount*multiplier / material_recipe.amount --how much we need of that item
+            createItem(material_info.mechanism, material_info.recipe, multiplier_material) --craft!
+        else --constantly create item, but in cost of preventing main thread from execution until job is done
+            local input_block = material.block
+            local output_block = peripheral.wrap(getMechanismOutputBlock(mechanism))
+            local recipe_info = getRecipe(mechanism, recipe)
             local amounts = item.amount
             local slots = item.slot
             local created = 0
             local taken = 0
             local done = false
             while not done do
-                --constantly get result item
-                for slot, searchable_item in pairs(block.list()) do
-                    if searchable_item.name == getRecipe(mechanism, recipe).name then
-                        if block.pushItems(peripheral.getName(storage), slot, 1) ~= 0 then
-                            taken = taken + 1
-                        end
+                --constantly pull result item to storage
+                for slot, searchable_item in pairs(output_block.list()) do
+                    if searchable_item.name == recipe_info.name then
+                        local taken_amount = output_block.pushItems(config.storage, slot, recipe_info.amount)
+                        --tracking how much did we take result items
+                        if taken_amount ~= 0 then taken = taken + taken_amount end
                     end
                 end
 
-                --constantly push item
-                if created == material.amount * multiplier and created == taken then
+                --constantly push item to mechanism's input block
+                if created == recipe_info.amount * multiplier and created == taken then
                     done = true --done pushing, all items were pushed
-                elseif amounts[1] == 0 then
+                elseif amounts[1] == 0 then --remove used slot from the list of slots
                     local lastSlot = table.remove(slots, 1)
                     table.remove(amounts, 1)
-                    if slots[1] == nil or #slots == 0 then
+
+                    --saving last slot in case it is deleted
+                    if slots[1] == nil or #slots == 0 then 
                         slots[1] = lastSlot
                     end
-                elseif storage.pushItems(material.block, slots[1], 1) ~= 0 then
-                    amounts[1] = amounts[1] - 1
-                    created = created + 1
+                --pushing certain amount of resources which we created
+                elseif storage.pushItems(input_block, slots[1], material.amount) ~= 0 then 
+                    print(amounts[1])
+                    --tracking amount of materials which were used to craft item(s)
+                    amounts[1] = amounts[1] - material.amount
+                    --tracking amount of resources we created from recipe
+                    created = created + recipe_info.amount
                 end
             end
         end

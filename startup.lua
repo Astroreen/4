@@ -8,7 +8,7 @@ local width, height = monitor.getSize() --monitor sizes
 --setting all up
 button.setMonitor(monitor)
 local chooseRecipes = true --control while loop which draws buttons
-local from = 0
+local from = 1
 
 function label(first_half, second_half)
 
@@ -50,17 +50,20 @@ local function createItemCraftScreen(mechanism, item)
     local both = {}
     local buttons = {}
 
-    local craft = recipe.amount.." x"..string.upper(itemName)
-    monitor.setCursorPos(width/2 - string.len(craft)/2, sum_height - 2)
-    monitor.write(craft) --writing item's name 
-
     --defining button names
     local createName = config.dictionary.buttons.create
     local denyName = config.dictionary.buttons.deny
 
+    --refreshes screen once calculator buttons are pressed
     local function refresh()
         local buttonSpace = 2 --space between buttons
         local offsetX = 3
+
+        --display how much of item will be craft
+        local craft = recipe.amount*sum.." x"..string.upper(itemName)
+        monitor.setCursorPos(width/2 - string.len(craft)/2, sum_height - 2)
+        monitor.clearLine()
+        monitor.write(craft) --writing item's name 
 
         --creating "Create" button
         local createButton = 
@@ -218,6 +221,7 @@ local function createButtonList()
         .setBlinkColor(colors.gray)
         .onClick(function ()
             from = from - 1
+            if from < 1 then from = 1 end
             main()
         end))
 
@@ -231,6 +235,7 @@ local function createButtonList()
         .setBlinkColor(colors.gray)
         .onClick(function ()
             from = from + 1
+            if from > #buttons then from = #buttons + 1 end
             main()
         end))
 

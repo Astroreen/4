@@ -20,9 +20,17 @@ end
 
 function substring(list, pos1, pos2)
     local final = {}
-    --if pos1 < 1 then pos1 = 1 end
-    --if pos2 > #list then pos2 = #list end
-    for i = pos1, pos2 do final[i] = list[i] end
+
+    if pos1 > pos2 then
+        local temp = pos1
+        pos1 = pos2
+        pos2 = temp
+    end
+    if pos1 > #list then pos1 = #list - pos1 end
+    if pos1 < 1 then pos1 = 1 end
+    if pos2 > #list then pos2 = #list end
+
+    for i = pos1, pos2 do table.insert(final, list[i]) end
     return final
 end
 

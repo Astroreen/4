@@ -7,13 +7,14 @@
         },
         "buttons":{
             "create": "Create",
-            "deny": "Deny"
+            "deny": "Back"
         }
     },
-    "storage": "minecraft:chest_4",
+    "storage": "storagedrawers:controller_0",
     "mechanisms": [
         {
             "name": "presser",
+            "block": "create:depot_6",
             "recipes": [
                 {
                     "name": "create:iron_sheet",
@@ -22,7 +23,7 @@
                         {
                             "material": "minecraft:iron_ingot",
                             "amount": 1,
-                            "block": "create:depot_1"
+                            "block": "create:depot_6"
                         }
                     ]
                 },
@@ -33,7 +34,7 @@
                         {
                             "material": "minecraft:gold_ingot",
                             "amount": 1,
-                            "block": "create:depot_1"
+                            "block": "create:depot_6"
                         }
                     ]
                 },
@@ -44,7 +45,57 @@
                         {
                             "material": "create:brass_ingot",
                             "amount": 1,
-                            "block": "create:depot_1"
+                            "block": "create:depot_6"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "crafter 1x1",
+            "block": "minecraft:barrel_0",
+            "recipes": [
+                {
+                    "name": "create:brass_nugget",
+                    "amount": 9,
+                    "materials": [
+                        {
+                            "material": "create:brass_ingot",
+                            "amount": 1,
+                            "block": "create:mechanical_crafter_0"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "precision mechanism",
+            "block": "create:depot_4",
+            "recipes": [
+                {
+                    "name": "create:precision_mechanism",
+                    "amount": 1,
+                    "materials": [
+                        {
+                            "material": "kubejs:basic_mechanism",
+                            "amount": 1,
+                            "block": "sophisticatedstorage:limited_barrel_2"
+                        },
+                        {
+                            "material": "create:brass_sheet",
+                            "amount": 1,
+                            "block": "create:deployer_7"
+                        },
+                        {
+                            "material": "create:electron_tube",
+                            "amount": 1,
+                            "block": "create:deployer_6"
+                        }
+                        ,
+                        {
+                            "material": "create:brass_nugget",
+                            "amount": 1,
+                            "block": "create:deployer_5"
                         }
                     ]
                 }

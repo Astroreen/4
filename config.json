@@ -10,7 +10,7 @@
             "deny": "Back"
         }
     },
-    "storage": "storagedrawers:controller_0",
+    "storage": "sophisticatedstorage:controller_0",
     "mechanisms": [
         {
             "name": "presser",
@@ -48,6 +48,28 @@
                             "block": "create:depot_6"
                         }
                     ]
+                },
+                {
+                    "name": "create:copper_sheet",
+                    "amount": 1,
+                    "materials": [
+                        {
+                            "material": "minecraft:copper_ingot",
+                            "amount": 1,
+                            "block": "create:depot_6"
+                        }
+                    ]
+                },
+                {
+                    "name": "createdeco:zinc_sheet",
+                    "amount": 1,
+                    "materials": [
+                        {
+                            "material": "create:zinc_ingot",
+                            "amount": 1,
+                            "block": "create:depot_6"
+                        }
+                    ]
                 }
             ]
         },
@@ -61,6 +83,28 @@
                     "materials": [
                         {
                             "material": "create:brass_ingot",
+                            "amount": 1,
+                            "block": "create:mechanical_crafter_0"
+                        }
+                    ]
+                },
+                {
+                    "name": "create:copper_nugget",
+                    "amount": 9,
+                    "materials": [
+                        {
+                            "material": "minecraft:copper_ingot",
+                            "amount": 1,
+                            "block": "create:mechanical_crafter_0"
+                        }
+                    ]
+                },
+                {
+                    "name": "create:zinc_nugget",
+                    "amount": 9,
+                    "materials": [
+                        {
+                            "material": "create:zinc_ingot",
                             "amount": 1,
                             "block": "create:mechanical_crafter_0"
                         }

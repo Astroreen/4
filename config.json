@@ -1,150 +1,207 @@
 {
-    "dictionary": {
-        "labels": {
-            "createLabel": "Create",
-            "statsLabel": "Stats",
-            "separator": "-"
-        },
-        "buttons":{
-            "create": "Create",
-            "deny": "Back"
-        }
+  "dictionary": {
+    "labels": {
+      "createLabel": "Create",
+      "statsLabel": "Stats",
+      "separator": "-"
     },
-    "storage": "sophisticatedstorage:controller_0",
-    "mechanisms": [
+    "buttons": {
+      "create": "Create",
+      "deny": "Back"
+    }
+  },
+  "storage": "sophisticatedstorage:controller_0",
+  "mechanisms": [
+    {
+      "name": "presser",
+      "output_block": "create:depot_6",
+      "recipes": [
         {
-            "name": "presser",
-            "block": "create:depot_6",
-            "recipes": [
-                {
-                    "name": "create:iron_sheet",
-                    "amount": 1,
-                    "materials": [
-                        {
-                            "material": "minecraft:iron_ingot",
-                            "amount": 1,
-                            "block": "create:depot_6"
-                        }
-                    ]
-                },
-                {
-                    "name": "create:golden_sheet",
-                    "amount": 1,
-                    "materials": [
-                        {
-                            "material": "minecraft:gold_ingot",
-                            "amount": 1,
-                            "block": "create:depot_6"
-                        }
-                    ]
-                },
-                {
-                    "name": "create:brass_sheet",
-                    "amount": 1,
-                    "materials": [
-                        {
-                            "material": "create:brass_ingot",
-                            "amount": 1,
-                            "block": "create:depot_6"
-                        }
-                    ]
-                },
-                {
-                    "name": "create:copper_sheet",
-                    "amount": 1,
-                    "materials": [
-                        {
-                            "material": "minecraft:copper_ingot",
-                            "amount": 1,
-                            "block": "create:depot_6"
-                        }
-                    ]
-                },
-                {
-                    "name": "createdeco:zinc_sheet",
-                    "amount": 1,
-                    "materials": [
-                        {
-                            "material": "create:zinc_ingot",
-                            "amount": 1,
-                            "block": "create:depot_6"
-                        }
-                    ]
-                }
-            ]
+          "name": "create:iron_sheet",
+          "amount": 1,
+          "materials": [
+            {
+              "material": "minecraft:iron_ingot",
+              "amount": 1,
+              "input_block": "create:depot_6"
+            }
+          ]
         },
         {
-            "name": "crafter 1x1",
-            "block": "minecraft:barrel_0",
-            "recipes": [
-                {
-                    "name": "create:brass_nugget",
-                    "amount": 9,
-                    "materials": [
-                        {
-                            "material": "create:brass_ingot",
-                            "amount": 1,
-                            "block": "create:mechanical_crafter_0"
-                        }
-                    ]
-                },
-                {
-                    "name": "create:copper_nugget",
-                    "amount": 9,
-                    "materials": [
-                        {
-                            "material": "minecraft:copper_ingot",
-                            "amount": 1,
-                            "block": "create:mechanical_crafter_0"
-                        }
-                    ]
-                },
-                {
-                    "name": "create:zinc_nugget",
-                    "amount": 9,
-                    "materials": [
-                        {
-                            "material": "create:zinc_ingot",
-                            "amount": 1,
-                            "block": "create:mechanical_crafter_0"
-                        }
-                    ]
-                }
-            ]
+          "name": "create:golden_sheet",
+          "amount": 1,
+          "materials": [
+            {
+              "material": "minecraft:gold_ingot",
+              "amount": 1,
+              "input_block": "create:depot_6"
+            }
+          ]
         },
         {
-            "name": "precision mechanism",
-            "block": "create:depot_4",
-            "recipes": [
-                {
-                    "name": "create:precision_mechanism",
-                    "amount": 1,
-                    "materials": [
-                        {
-                            "material": "kubejs:basic_mechanism",
-                            "amount": 1,
-                            "block": "sophisticatedstorage:limited_barrel_2"
-                        },
-                        {
-                            "material": "create:brass_sheet",
-                            "amount": 1,
-                            "block": "create:deployer_7"
-                        },
-                        {
-                            "material": "create:electron_tube",
-                            "amount": 1,
-                            "block": "create:deployer_6"
-                        }
-                        ,
-                        {
-                            "material": "create:brass_nugget",
-                            "amount": 1,
-                            "block": "create:deployer_5"
-                        }
-                    ]
-                }
-            ]
+          "name": "create:brass_sheet",
+          "amount": 1,
+          "materials": [
+            {
+              "material": "create:brass_ingot",
+              "amount": 1,
+              "input_block": "create:depot_6"
+            }
+          ]
+        },
+        {
+          "name": "create:copper_sheet",
+          "amount": 1,
+          "materials": [
+            {
+              "material": "minecraft:copper_ingot",
+              "amount": 1,
+              "input_block": "create:depot_6"
+            }
+          ]
+        },
+        {
+          "name": "createdeco:zinc_sheet",
+          "amount": 1,
+          "materials": [
+            {
+              "material": "create:zinc_ingot",
+              "amount": 1,
+              "input_block": "create:depot_6"
+            }
+          ]
         }
-    ]
+      ]
+    },
+    {
+      "name": "crafter 1x1",
+      "output_block": "minecraft:barrel_0",
+      "recipes": [
+        {
+          "name": "create:brass_nugget",
+          "amount": 9,
+          "materials": [
+            {
+              "material": "create:brass_ingot",
+              "amount": 1,
+              "input_block": "create:mechanical_crafter_0"
+            }
+          ]
+        },
+        {
+          "name": "create:copper_nugget",
+          "amount": 9,
+          "materials": [
+            {
+              "material": "minecraft:copper_ingot",
+              "amount": 1,
+              "input_block": "create:mechanical_crafter_0"
+            }
+          ]
+        },
+        {
+          "name": "create:zinc_nugget",
+          "amount": 9,
+          "materials": [
+            {
+              "material": "create:zinc_ingot",
+              "amount": 1,
+              "input_block": "create:mechanical_crafter_0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "precision mechanism",
+      "output_block": "create:depot_4",
+      "recipes": [
+        {
+          "name": "create:precision_mechanism",
+          "amount": 1,
+          "materials": [
+            {
+              "material": "kubejs:basic_mechanism",
+              "amount": 1,
+              "input_block": "sophisticatedstorage:limited_barrel_2"
+            },
+            {
+              "material": "create:brass_sheet",
+              "amount": 1,
+              "input_block": "create:deployer_7"
+            },
+            {
+              "material": "create:electron_tube",
+              "amount": 1,
+              "input_block": "create:deployer_6"
+            },
+            {
+              "material": "create:brass_nugget",
+              "amount": 1,
+              "input_block": "create:deployer_5"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mixer",
+      "output_block": "create:depot_15",
+      "recipes": [
+        {
+          "name": "create:andesite_alloy",
+          "amount": 1,
+          "materials": [
+            {
+              "material": "minecraft:cobblestone",
+              "amount": 1,
+              "input_block": "basin_6"
+            },
+            {
+              "material": "minecraft:gray_dye",
+              "amount": 1,
+              "input_block": "basin_6"
+            },
+            {
+              "material": "create:zinc_nugget",
+              "amount": 1,
+              "input_block": "basin_7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "basic mechanism",
+      "output_block": "create:depot_11",
+      "recipes": [
+        {
+          "name": "kubejs:basic_mechanism",
+          "amount": 1,
+          "materials": [
+            {
+              "material": "minecraft:spruce_planks",
+              "amount": 1,
+              "input_block": "sophisticatedstorage:limited_barrel_4"
+            },
+            {
+              "material": "create:andesite_alloy",
+              "amount": 1,
+              "input_block": "create:deployer_8"
+            },
+            {
+              "material": "create:cogwheel",
+              "amount": 1,
+              "input_block": "create:deployer_9"
+            },
+            {
+              "material": "create:cogwheel",
+              "amount": 1,
+              "input_block": "create:deployer_10"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
-

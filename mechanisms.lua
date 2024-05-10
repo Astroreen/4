@@ -14,7 +14,7 @@ end
 
 --gets block name by mechanism's index
 function getMechanismOutputBlock(mechanism)
-    return tostring(config.mechanisms[tonumber(mechanism)].block)
+    return tostring(config.mechanisms[tonumber(mechanism)].output_block)
 end
 
 --gets all names of mechanisms
@@ -85,7 +85,7 @@ end
 --get info about material in certain recipe e.g. name, amount
 function getMaterial(mechanism, recipe, material)
     local item = config.mechanisms[tonumber(mechanism)].recipes[tonumber(recipe)].materials[tonumber(material)]
-    return {name = item.material, amount = item.amount, block = item.block}
+    return {name = item.material, amount = item.amount, input_block = item.input_block}
 end
 
 --gets material's info from name
@@ -109,6 +109,9 @@ function getMaterials(mechanism, recipe)
         local material = getMaterial(mechanism, recipe, i)
         if arr[material.name] == nil then
             arr[material.name] = material
+        --in case there is diffrent blocks to put materials in, we separate them in the list
+        elseif arr[material.name].input_block ~= material.input_block then
+            table.insert(arr, material)
         else
             arr[material.name].amount = arr[material.name].amount + material.amount
         end
@@ -163,8 +166,10 @@ function haveEnoughResources(mechanism, recipe, multiplier)
         else --check if the needed material have a recipe
             local item_info = getMaterialInfoByName(materials[i].name)
             if item_info.found then --only work if item can be crafted
-                local multiplier_x = materials[i].amount*multiplier / recipes[i].amount --how much we need of that item
-                local recursive = haveEnoughResources(j, k, multiplier_x)
+                local item_recipe = getRecipe(item_info.mechanism, item_info.recipe)
+                --how much we need of that item
+                local multiplier_x = materials[i].amount*multiplier / item_recipe.amount
+                local recursive = haveEnoughResources(item_info.mechanism, item_info.recipe, multiplier_x)
 
                 if recursive.enough == false then
                     table.insert(needed, recursive.need)
@@ -207,12 +212,12 @@ function createItem(mechanism, recipe, multiplier)
                 item = getItem(material.name) --gets newly created item from storage
             end
 
-            local input_block = material.block
+            local input_block = material.input_block
             local slots = item.slot
             ---on this particular stage, there might be an error due to lack of materials,
             ---this is because there might be multiple slots in which items are stored
             ---but in my sitution, I have all items in one place, so there is no need 
-            ---for me to worry about this exception. Pull requests are always welcomed!
+            ---for me to worry about this exception. Pull requests are always welcomed! :)
 
             --pushing items to mechanism
             storage.pushItems(input_block, slots[1], material.amount)
@@ -224,13 +229,14 @@ function createItem(mechanism, recipe, multiplier)
 
         --wait and pull result item(s) to storage after done pushing items in
         repeat
+            sleep(1)
             for slot, searchable_item in pairs(output_block.list()) do
                 if searchable_item.name == recipe_info.name 
                 and searchable_item.count == recipe_info.amount then
                     found = true
                     output_block.pushItems(config.storage, slot, recipe_info.amount)
                 end
-            end 
+            end
         until found
     end
 end

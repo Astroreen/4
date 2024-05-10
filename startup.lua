@@ -4,11 +4,15 @@ local utils = require("utils") --utils
 require("mechanisms")
 local monitor = peripheral.find("monitor") --monitor
 local width, height = monitor.getSize() --monitor sizes
+local available_height = height - 5 --height with label and buttons "up" and "down"
+local button_up = "/\\"
+local button_down = "\\/"
 
 --setting all up
 button.setMonitor(monitor)
 local chooseRecipes = true --control while loop which draws buttons
-local from = 1
+local recepices_start = 1 --from which point start showing list of recipes
+local materials_start = 1 --from which point start showing list of materials for crafting
 
 function label(first_half, second_half)
 
@@ -42,7 +46,7 @@ local function createItemCraftScreen(mechanism, item)
     local done = false
 
     local sum = 1;
-    local sum_position = width*9/24 - 1
+    local sum_position = width*4/48
     local sum_height = 8
 
     local positives = {1, 16, 32, 64}
@@ -61,14 +65,14 @@ local function createItemCraftScreen(mechanism, item)
 
         --display how much of item will be craft
         local craft = recipe.amount*sum.." x"..string.upper(itemName)
-        monitor.setCursorPos(width/2 - string.len(craft)/2, sum_height - 2)
+        monitor.setCursorPos(width/4 - string.len(craft)/2, sum_height - 2)
         monitor.clearLine()
         monitor.write(craft) --writing item's name 
 
         --creating "Create" button
         local createButton = 
         button.create(createName)
-        .setPos(width/2 - string.len(createName)/2 - buttonSpace - offsetX, sum_height + 6)
+        .setPos(width/4 - string.len(createName)/2 - buttonSpace - offsetX, sum_height + 6)
         .setSize(string.len(createName) + 2, 3)
         .setTextColor(colors.white)
         .setBlinkColor(colors.gray)
@@ -80,18 +84,62 @@ local function createItemCraftScreen(mechanism, item)
             main()
         end)
     
-        if haveEnoughResources(mechanism, item, sum).enough then
+        --chechk if we have enough resources, if don't, then display what
+        --resources we steel need in order to craft material
+        local resource_status = haveEnoughResources(mechanism, item, sum)
+        if resource_status.enough then
+            --enable create button
             createButton.setBackgroundColor(colors.green)
             createButton.setActive(true)
         else
+            --disable create button
             createButton.setBackgroundColor(colors.gray)
             createButton.setActive(false)
+
+            --show the list of needs to craft material
+            local needs = utils.substring(resource_status.need, materials_start, available_height)
+            monitor.setBackgroundColor(colors.black)
+            monitor.setTextColor(colors.white)
+            for i = 1, #needs do
+    
+                local need = needs[i].amount.." x"..utils.getClearItemName(needs[i].name)
+                monitor.setCursorPos(width*11/12 - string.len(need), 4 + i)
+                monitor.write(need)
+            end
+
+            table.insert(buttons, button
+            .create(button_up)
+            .setPos(width*4/6 - 1, 4)
+            .setSize(width/4 - 1, 1)
+            .setAlign("center")
+            .setTextColor(colors.white)
+            .setBackgroundColor(colors.black)
+            .setBlinkColor(colors.gray)
+            .onClick(function ()
+                materials_start = materials_start - 1
+                if materials_start < 1 then materials_start = 1 end
+                refresh()
+            end))
+
+            table.insert(buttons, button
+            .create(button_down)
+            .setPos(width*4/6 - 1, height - 1)
+            .setSize(width/4 - 1, 1)
+            .setAlign("center")
+            .setTextColor(colors.white)
+            .setBackgroundColor(colors.black)
+            .setBlinkColor(colors.gray)
+            .onClick(function ()
+                materials_start = materials_start + 1
+                if materials_start > #needs then materials_start = #needs + 1 end
+                refresh()
+            end))
         end
 
         --creating "Deny" button
         local denyButton =
         button.create(denyName)
-        .setPos(width/2 + string.len(denyName)/2 + buttonSpace - offsetX, sum_height + 6)
+        .setPos(width/4 + string.len(denyName)/2 + buttonSpace - offsetX, sum_height + 6)
         .setSize(string.len(denyName) + 2, 3)
         .setTextColor(colors.white)
         .setBackgroundColor(colors.red)
@@ -154,7 +202,7 @@ local function createItemCraftScreen(mechanism, item)
         end)
     end
 
-    for i = 1, #positives do --settings for positives buttons
+    for i = 1, #positives do --settings for positives buttons (+1, +16, etc.)
         local num = positives[i]
 
         buttons[num]
@@ -164,7 +212,7 @@ local function createItemCraftScreen(mechanism, item)
         .setAlign("right")
     end
 
-    for i = 1, #negatives do --settings for negatives buttons
+    for i = 1, #negatives do --settings for negatives buttons (-1, -16, etc.)
         local num = negatives[i]
 
         buttons[num]
@@ -195,7 +243,7 @@ local function createButtonList()
             table.insert(buttons, button
                 .create(craft)
                 .setSize(string.len(recipe) + 2, 1)
-                .setAlign("center")
+                .setAlign("left")
                 .setTextColor(colors.white)
                 .setBackgroundColor(colors.black)
                 .setBlinkColor(colors.gray)
@@ -204,15 +252,14 @@ local function createButtonList()
         end
     end
 
-    local available_height = height - 5
-    buttons = utils.substring(buttons, from, available_height)
+    buttons = utils.substring(buttons, recepices_start, available_height)
 
     for i = 1, #buttons do
-        buttons[i].setPos(width/6 - string.len(buttons[1].getText())/2, 4 + i)
+        buttons[i].setPos(width/10, 4 + i)
     end
 
     table.insert(buttons, button
-        .create("/\\")
+        .create(button_up)
         .setPos(width/6 - 1, 4)
         .setSize(width/4 - 1, 1)
         .setAlign("center")
@@ -220,13 +267,13 @@ local function createButtonList()
         .setBackgroundColor(colors.black)
         .setBlinkColor(colors.gray)
         .onClick(function ()
-            from = from - 1
-            if from < 1 then from = 1 end
+            recepices_start = recepices_start - 1
+            if recepices_start < 1 then recepices_start = 1 end
             main()
         end))
 
     table.insert(buttons, button
-        .create("\\/")
+        .create(button_down)
         .setPos(width/6 - 1, height - 1)
         .setSize(width/4 - 1, 1)
         .setAlign("center")
@@ -234,8 +281,8 @@ local function createButtonList()
         .setBackgroundColor(colors.black)
         .setBlinkColor(colors.gray)
         .onClick(function ()
-            from = from + 1
-            if from > #buttons then from = #buttons + 1 end
+            recepices_start = recepices_start + 1
+            if recepices_start > #buttons then recepices_start = #buttons + 1 end
             main()
         end))
 
